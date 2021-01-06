@@ -3,14 +3,10 @@ version: "3.7"
 services:
   codex-keycloak:
     container_name: codexkeycloak
-    image: quay.io/keycloak/keycloak:${TAG}
+    image: codexkeycloak:${TAG}
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
-      KEYCLOAK_IMPORT: /tmp/realm.json
-    volumes:
-      - ./realm-export.json:/tmp/realm.json
-      - ./importUsersAndMappings.sh:/tmp/importUsersAndMappings.sh
     networks:
       - codex-develop
     ports:
