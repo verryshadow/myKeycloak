@@ -13,6 +13,17 @@ This projects provides an easy way to start a Docker container running an instan
 | user1 | codex | CODEX_USER | 
 | user2 | codex | CODEX_USER | 
 
+
+| Client Id | client-secret | site-name | site-id
+|---|---|---|---|
+| diz-uker | 4f390e12-487f-402f-9c63-86c1476ed462 |Universitätsklinikum Erlangen|uker|
+| diz-umm | 8af3a619-13c3-4d15-8c7b-4670295b889e |Universitätsklinikum Mannheim|umm|
+| diz-ukf | 0e1de709-6918-4c5a-a57d-1428ba73c21a |Universitätsklinikum Frankfurt|ukf|
+| diz-uka | 7964b975-ad1b-491f-b2bc-833032289e9b |Universitätsklinikum Aachen|uka|
+|middleware-broker|ae769d44-35b5-456c-a0b7-25add1059536||
+
+Note: site-name and site-id are hardcoded claims configured for each client.
+
 ## Create Docker image
 ```
 docker build -t codexkeycloak .
@@ -41,20 +52,47 @@ Manage > Users > View all users
 ```
 
 ## Change realm
-Chose a local directory (e.g. 'c:/Users/Hans/docker/tmp') and copy file .docker/keycloak-dump.json into directory.
+Start the current version of keycloak
 
-Run Docker container with chosen directory mapped to '/tmp' (anonymous volume) 
 ```
-docker run -d -p 8180:8080 -v c:/Users/Hans/docker/tmp:/tmp --name kc codexkeycloak
+docker-compose up -d
 ```
+
 Open browser, login (User: admin / Password: admin) and start configuring
 ```
 http://localhost:8180/auth/admin/
 ```
 Start export using Docker run command
 ```
-docker exec -it kc /opt/jboss/keycloak/bin/standalone.sh -Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/keycloak-dump.json
+docker exec -it --user root kc /opt/jboss/keycloak/bin/standalone.sh -Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/keycloak-dump.json
 ```
-Inside the chosen directory (e.g. 'c:/Users/Hans/docker/tmp') we have a new database dumb of keycloak. Copy it to ./docker
-
+Copy the newly created keycloak-dump.json file to the ./docker folder of this repository
+```
+docker cp codexkeycloak:/tmp/keycloak-dump.json ./docker/keycloak-dump.json
+```
 Create new Docker image (described above)
+
+
+## Example Workflow for Middleware Authentication
+
+Request access token with client:
+
+```
+curl -X POST \
+  http://localhost:8080/auth/realms/codex-develop/protocol/openid-connect/token \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Postman-Token: d85cecc5-5d8c-44ba-b920-d27ca0bc9f49' \
+  -d 'grant_type=client_credentials&client_id=diz-uker&scope=openid&client_secret=4f390e12-487f-402f-9c63-86c1476ed462'
+```
+
+Introspect (check) access token of client with middleware broker client:
+
+```
+curl -X POST \
+  http://localhost:8080/auth/realms/codex-develop/protocol/openid-connect/token/introspect \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Postman-Token: 925669a1-54d2-4770-a14d-c65408aa03fe' \
+  -d 'token=<PASTE-YOUR-TOKEN-RECIEVED-FROM-POST-ABOVE-HERE>'
+```
