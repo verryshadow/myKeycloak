@@ -31,11 +31,11 @@ docker build -t codexkeycloak .
 
 ## Run Docker container
 ```
-docker run -p 8080:8080 codexkeycloak
+docker run -p 8080:8080 -d codexkeycloak
 ```
 alternatively (use docker-compose)
 ```
-docker-compose up
+docker-compose up -d
 ```
 ## Test Keycloak
 After starting a Keycloak container open a browser
@@ -55,16 +55,16 @@ Manage > Users > View all users
 Start the current version of keycloak
 
 ```
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 Open browser, login (User: admin / Password: admin) and start configuring
 ```
-http://localhost:8180/auth/admin/
+http://localhost:8080/auth/admin/
 ```
-Start export using Docker run command
+Start export using Docker run command (after exporting is completed abort the process)
 ```
-docker exec -it --user root kc /opt/jboss/keycloak/bin/standalone.sh -Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/keycloak-dump.json
+docker exec -it --user root codexkeycloak /opt/jboss/keycloak/bin/standalone.sh -Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/keycloak-dump.json
 ```
 Copy the newly created keycloak-dump.json file to the ./docker folder of this repository
 ```
