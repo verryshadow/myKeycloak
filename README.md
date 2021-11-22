@@ -1,7 +1,7 @@
 # Keycloak for CODEX
 
 ## Purpose
-Both for backend as well as frontend development an instance of Keycloak is mandatory.
+Both for backend and frontend development an instance of Keycloak is mandatory.
 This projects provides an easy way to start a Docker container running an instance of a Keycloak server with a configuration suitable for development.
 
 ## Configuration
@@ -92,6 +92,6 @@ curl -X POST \
   http://localhost:8080/auth/realms/codex-develop/protocol/openid-connect/token/introspect \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'token=<PASTE-YOUR-TOKEN-RECIEVED-FROM-POST-ABOVE-HERE>&client_id=middleware-broker&client_secret=ae769d44-35b5-456c-a0b7-25add1059536'
+  -d 'token=<PASTE-YOUR-TOKEN-RECEIVED-FROM-POST-ABOVE-HERE>&client_id=middleware-broker&client_secret=ae769d44-35b5-456c-a0b7-25add1059536'
 ```
 
