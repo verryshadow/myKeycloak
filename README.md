@@ -82,7 +82,6 @@ curl -X POST \
   http://localhost:8080/auth/realms/codex-develop/protocol/openid-connect/token \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -H 'Postman-Token: d85cecc5-5d8c-44ba-b920-d27ca0bc9f49' \
   -d 'grant_type=client_credentials&client_id=diz-uker&scope=openid&client_secret=4f390e12-487f-402f-9c63-86c1476ed462'
 ```
 
@@ -93,6 +92,6 @@ curl -X POST \
   http://localhost:8080/auth/realms/codex-develop/protocol/openid-connect/token/introspect \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -H 'Postman-Token: 925669a1-54d2-4770-a14d-c65408aa03fe' \
-  -d 'token=<PASTE-YOUR-TOKEN-RECIEVED-FROM-POST-ABOVE-HERE>'
+  -d 'token=<PASTE-YOUR-TOKEN-RECIEVED-FROM-POST-ABOVE-HERE>&client_id=middleware-broker&client_secret=ae769d44-35b5-456c-a0b7-25add1059536'
 ```
+
