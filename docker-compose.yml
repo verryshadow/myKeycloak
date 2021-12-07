@@ -10,12 +10,14 @@ services:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data:z
+      - "db:/var/lib/postgresql/data"
 
   codex-keycloak:
     container_name: codexkeycloak
+    image: jboss/keycloak:15.0.2
     restart: unless-stopped
-    build: .
+    ports:
+      - "8080:8080"
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db
@@ -26,6 +28,9 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
       PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_IMPORT: /tmp/initial-realm.json
+    volumes:
+      - ${KEYCLOAKIMPORTFILE:-./init/initial-realm-dev.json}:/tmp/initial-realm.json
     depends_on:
       - db
 
