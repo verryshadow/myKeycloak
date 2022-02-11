@@ -2,9 +2,21 @@
 
 ## Purpose
 Both for backend and frontend development an instance of Keycloak is mandatory.
-This projects provides an easy way to start a Docker container running an instance of a Keycloak server with a configuration suitable for development.
+This projects provides an easy way to start a Docker container running an instance of a Keycloak server with one configuration suitable for development and one for production use.
 
 ## Configuration
+
+### Production and Development
+
+Production and development system differ in means of security restrictions (dev allows any redirect uri and origin)
+as well as preconfigured users (production does not supply any preconfigured users).
+
+(TODO: there are still some open questions to be discussed for the production settings. Currently, the redirect/origin limits are **NOT** in place.)
+
+To switch between the two, replace the env variable _KEYCLOAKIMPORTFILE_ (e.g. by providing a _.env_ file)
+with either _./init/initial-realm-dev.json_ for develop (default setting) or _./init/initial-realm-prod.json_
+
+### Users (dev only)
 
 | User | Password | Role |
 |---|---|---|
@@ -13,6 +25,7 @@ This projects provides an easy way to start a Docker container running an instan
 | user1 | codex | CODEX_USER | 
 | user2 | codex | CODEX_USER | 
 
+### Clients
 
 | Client Id | client-secret | site-name | site-id
 |---|---|---|---|
@@ -24,18 +37,9 @@ This projects provides an easy way to start a Docker container running an instan
 
 Note: site-name and site-id are hardcoded claims configured for each client.
 
-## Create Docker image
-```
-docker build -t codexkeycloak .
-```
-
 ## Run Docker container
 ```
-docker run -p 8080:8080 -d codexkeycloak
-```
-alternatively (use docker-compose)
-```
-docker-compose up -d
+docker-compose up -d 
 ```
 ## Test Keycloak
 After starting a Keycloak container open a browser
@@ -46,32 +50,10 @@ login to Keycloak as admin
 ```
 Administration Console >
 ```
-check if user 'codex-developer' is imported
+check if user 'codex-developer' is imported (dev only)
 ```
 Manage > Users > View all users
 ```
-
-## Change realm
-Start the current version of keycloak
-
-```
-docker-compose up -d --build
-```
-
-Open browser, login (User: admin / Password: admin) and start configuring
-```
-http://localhost:8080/auth/admin/
-```
-Start export using Docker run command (after exporting is completed abort the process)
-```
-docker exec -it --user root codexkeycloak /opt/jboss/keycloak/bin/standalone.sh -Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/keycloak-dump.json
-```
-Copy the newly created keycloak-dump.json file to the ./docker folder of this repository
-```
-docker cp codexkeycloak:/tmp/keycloak-dump.json ./docker/keycloak-dump.json
-```
-Create new Docker image (described above)
-
 
 ## Example Workflow for Middleware Authentication
 
