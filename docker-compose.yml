@@ -2,35 +2,31 @@ version: "3.7"
 
 services:
   db:
-    container_name: codexkeycloakdb
     image: postgres:14-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
     volumes:
       - "db:/var/lib/postgresql/data"
 
-  codex-keycloak:
-    container_name: codexkeycloak
+  zars-keycloak:
     image: jboss/keycloak:16.1.1
     restart: unless-stopped
-    ports:
-      - "8080:8080"
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db
-      DB_DATABASE: keycloak
-      DB_USER: keycloak
+      DB_DATABASE: ${DB_NAME}
+      DB_USER: ${DB_USER}
       DB_SCHEMA: public
-      DB_PASSWORD: postgres
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      DB_PASSWORD: ${DB_PASSWORD}
+      KEYCLOAK_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       PROXY_ADDRESS_FORWARDING: "true"
       KEYCLOAK_IMPORT: /tmp/initial-realm.json
     volumes:
-      - ${KEYCLOAKIMPORTFILE:-./init/initial-realm-dev.json}:/tmp/initial-realm.json
+      - ${KEYCLOAKIMPORTFILE:-./init/initial-realm-prod.json}:/tmp/initial-realm.json
     depends_on:
       - db
 

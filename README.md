@@ -61,7 +61,7 @@ Request access token with client:
 
 ```
 curl -X POST \
-  http://localhost:8080/auth/realms/codex-develop/protocol/openid-connect/token \
+  http://<zars-keycloak>:8080/auth/realms/codex-develop/protocol/openid-connect/token \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'grant_type=client_credentials&client_id=diz-uker&scope=openid&client_secret=4f390e12-487f-402f-9c63-86c1476ed462'
@@ -71,7 +71,7 @@ Introspect (check) access token of client with middleware broker client:
 
 ```
 curl -X POST \
-  http://localhost:8080/auth/realms/codex-develop/protocol/openid-connect/token/introspect \
+  http://<zars-keycloak>:8080/auth/realms/codex-develop/protocol/openid-connect/token/introspect \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'token=<PASTE-YOUR-TOKEN-RECEIVED-FROM-POST-ABOVE-HERE>&client_id=middleware-broker&client_secret=ae769d44-35b5-456c-a0b7-25add1059536'
