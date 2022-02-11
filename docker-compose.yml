@@ -14,7 +14,7 @@ services:
 
   codex-keycloak:
     container_name: codexkeycloak
-    image: jboss/keycloak:15.0.2
+    image: jboss/keycloak:16.1.1
     restart: unless-stopped
     ports:
       - "8080:8080"
