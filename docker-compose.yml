@@ -26,9 +26,12 @@ services:
       PROXY_ADDRESS_FORWARDING: "true"
       KEYCLOAK_IMPORT: /tmp/initial-realm.json
     volumes:
-      - ${KEYCLOAKIMPORTFILE:-./init/initial-realm-prod.json}:/tmp/initial-realm.json
+      - ${KEYCLOAKIMPORTFILE:-./init/initial-realm-dev.json}:/tmp/initial-realm.json
     depends_on:
       - db
+    ports:
+      - "8080:8080"
+
 
 volumes:
   db:
